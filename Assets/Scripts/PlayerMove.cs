@@ -16,14 +16,16 @@ public class PlayerMove : MonoBehaviour
 
     private float lastDashTime;
     private bool isDashing;
+    private Rigidbody playerRb;
 
     void Start()
     {
+        playerRb = GetComponent<Rigidbody>();
         isDashing = false;
         lastDashTime = -100;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         processMove();
         processDash();
@@ -31,12 +33,12 @@ public class PlayerMove : MonoBehaviour
 
     void processMove()
     {
-        transform.Translate(moveDirection * (Time.deltaTime * defaultSpeed), Space.World);
+        playerRb.MovePosition(transform.position + moveDirection * (Time.deltaTime * defaultSpeed));
 
         if (moveDirection != Vector3.zero)
         {
             Quaternion toRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+            playerRb.MoveRotation(Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime));
         }
     }
 
@@ -44,7 +46,7 @@ public class PlayerMove : MonoBehaviour
     {
         if (isDashing)
         {
-            transform.Translate(Vector3.forward * (Time.deltaTime * dashSpeed));
+            playerRb.MovePosition(transform.position + transform.forward * (Time.deltaTime * dashSpeed));
         }
     }
 
