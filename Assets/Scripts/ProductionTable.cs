@@ -12,14 +12,7 @@ public class ProductionTable : Table
 
     public override FoodType interAct(FoodType givenFood)
     {
-        if (givenFood == FoodType.None)
-        {
-            print("澜侥 积己");
-            return productionFoodType;
-        }
-        else
-        {
-            return FoodType.None;
-        }
+        print("澜侥 积己");
+        return productionFoodType;
     }
 }

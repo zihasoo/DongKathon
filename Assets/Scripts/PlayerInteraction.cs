@@ -29,25 +29,20 @@ public class PlayerInteraction : MonoBehaviour
 
             var food = table.interAct(carryingFoodType);
 
-            if (food == FoodType.None)
+            if (food == FoodType.None && carryingFoodType != FoodType.None)
             //음식을 내려놨을 때
             {
-                if (carryingFoodType != FoodType.None)
-                {
-                    Destroy(transform.GetChild(1).gameObject);
-                }
+                Destroy(transform.GetChild(1).gameObject);
+                carryingFoodType = food;
             }
-            else
+            if (food != FoodType.None && carryingFoodType == FoodType.None)
             //음식을 들었을 때
             {
                 var foodObj = Resources.Load<GameObject>($"Prefabs/{Table.foodTypeNameMap[food]}");
                 var obj = Instantiate(foodObj, transform);
                 obj.transform.localPosition = new Vector3(0, 0.5f, 0.8f);
+                carryingFoodType = food;
             }
-            carryingFoodType = food;
-            //currentSelected.transform.SetParent(triggerTransform);
-            //currentSelected.transform.localPosition = Vector3.zero;
-            //Destroy(currentSelected.gameObject);
         }
     }
 
