@@ -3,27 +3,52 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    public float selectedColorAlpha;
-    private const float unSelectedColorAlpha = 1.0f;
     public Transform triggerTransform;
 
     private bool touch = false;
+    private FoodType carryingFoodType = FoodType.None;
     private Collider currentSelected = null;
     private HashSet<Collider> collidedObjects = new HashSet<Collider>();
 
     void Start()
     {
-        
+        OnInteraction();
     }
 
     void Update()
     {
-        
     }
 
     void OnInteraction()
     {
+        if (touch) {
+            touch = false;
+            collidedObjects.Clear();
+            var table = currentSelected.gameObject.GetComponent<Table>();
+            table.unSelect();
 
+            var food = table.interAct(carryingFoodType);
+
+            if (food == FoodType.None)
+            //음식을 내려놨을 때
+            {
+                if (carryingFoodType != FoodType.None)
+                {
+                    Destroy(transform.GetChild(1).gameObject);
+                }
+            }
+            else
+            //음식을 들었을 때
+            {
+                var foodObj = Resources.Load<GameObject>($"Prefabs/{Table.foodTypeNameMap[food]}");
+                var obj = Instantiate(foodObj, transform);
+                obj.transform.localPosition = new Vector3(0, 0.5f, 0.8f);
+            }
+            carryingFoodType = food;
+            //currentSelected.transform.SetParent(triggerTransform);
+            //currentSelected.transform.localPosition = Vector3.zero;
+            //Destroy(currentSelected.gameObject);
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -45,20 +70,20 @@ public class PlayerInteraction : MonoBehaviour
         }
         if (closest != currentSelected)
         {
-            unSelect(currentSelected);
-            select(closest);
+            currentSelected.GetComponent<Table>().unSelect();
+            closest.GetComponent<Table>().select();
             currentSelected = closest;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.gameObject.tag.Equals("Food")) return;
+        if (!other.gameObject.tag.Equals("Selectable")) return;
 
         collidedObjects.Add(other);
         if (!touch)
         {
-            select(other);
+            other.GetComponent<Table>().select();
             currentSelected = other;
             touch = true;
         }
@@ -68,19 +93,9 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (currentSelected == other)
         {
-            unSelect(currentSelected);
+            currentSelected.GetComponent<Table>().unSelect();
             touch = false;
         }
         collidedObjects.Remove(other);
-    }
-
-    private void select(Collider c) => setAlpha(c, selectedColorAlpha);
-
-    private void unSelect(Collider c) => setAlpha(c, unSelectedColorAlpha);
-
-    private void setAlpha(Collider target, float alpha)
-    {
-        Color otherColor = target.GetComponent<MeshRenderer>().material.color;
-        target.GetComponent<MeshRenderer>().material.color = new Color(otherColor.r, otherColor.g, otherColor.b, alpha);
     }
 }
