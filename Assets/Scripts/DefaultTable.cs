@@ -2,41 +2,35 @@ using UnityEngine;
 
 public class DefaultTable : Table
 {
-    private FoodType currentFood = FoodType.None;
+    protected ItemType currentItem = ItemType.None;
 
-    private void Start()
+    public override ItemType takeItem()
     {
-        _tableType = 1;
+        if (currentItem == ItemType.None)
+            return ItemType.None;
+
+        Destroy(transform.GetChild(0).gameObject);
+        var ret = currentItem;
+        currentItem = ItemType.None;
+        return ret;
     }
 
-    public override FoodType interAct(FoodType givenFood)
+    public override bool putDownItem(ItemType givenFood)
     {
-        if (currentFood == FoodType.None)
+        if (currentItem == ItemType.None)
         //테이블에 음식이 없을 때
         {
-            if (givenFood != FoodType.None)
-            {
-                print("음식 내려놓음");
-                currentFood = givenFood;
-                var foodObject = Resources.Load<GameObject>($"Prefabs/{Table.foodTypeNameMap[currentFood]}");
-                Instantiate(foodObject, transform);
-            }
-            return FoodType.None;
-        }
-        else if (givenFood != FoodType.None)
-        //테이블에도 음식이 있고 캐릭터에도 음식이 있을 때 (음식 합치기)
-        {
-            print("음식 합쳐짐");
-            return FoodType.None;
+            currentItem = givenFood;
+            var obj = Resources.Load<GameObject>($"Prefabs/{Table.itemTypeNameMap[currentItem]}");
+            Instantiate(obj, transform);
+            return true;
         }
         else
-        //테이블에 음식이 있지만 캐릭터에 음식이 없을 때 (음식 들기)
+        //음식이 있을 때 (음식 합치기) **************구현해야됨****************
         {
-            print("음식 들어짐");
-            Destroy(transform.GetChild(0).gameObject);
-            var ret = currentFood;
-            currentFood = FoodType.None;
-            return ret;
+            print("음식 합쳐짐");
+            
+            return false; //음식이 합쳐지면 true 아니면 false
         }
     }
 }

@@ -2,11 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-public enum FoodType : ushort
+public enum ItemType : ushort
 {
     None,
-    Tomato,
-    Lettuce
+    Tomato = 10,
+    CutTomato = 20,
+    Cucumber = 100,
+    CutCucumber = 200
 }
 
 public abstract class Table : MonoBehaviour
@@ -14,18 +16,11 @@ public abstract class Table : MonoBehaviour
     public const float selectedColorAlpha = 0.3f;
     private const float unSelectedColorAlpha = 1.0f;
 
-    public static Dictionary<FoodType, string> foodTypeNameMap = new Dictionary<FoodType, string>()
+    public static Dictionary<ItemType, string> itemTypeNameMap = new Dictionary<ItemType, string>()
     {
-        {FoodType.Tomato, "Tomato" },
-        {FoodType.Lettuce, "Lettuce" },
+        {ItemType.Tomato, "Tomato" },
+        {ItemType.Cucumber, "Cucumber" },
     };
-
-    protected int _tableType ;
-    public int tableType { 
-        get { 
-            return _tableType;  
-        } 
-    }
 
     public void select()
     {
@@ -41,6 +36,8 @@ public abstract class Table : MonoBehaviour
         mat.color = new Color(c.r, c.g, c.b, unSelectedColorAlpha);
     }
 
-    public abstract FoodType interAct(FoodType givenFood);
+    public abstract ItemType takeItem();
+
+    public abstract bool putDownItem(ItemType givenFood);
 
 }

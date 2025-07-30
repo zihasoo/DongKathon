@@ -3,16 +3,15 @@ using UnityEngine;
 public class ProductionTable : Table
 {
     [SerializeField]
-    private FoodType productionFoodType;
+    private ItemType productionItemType;
 
-    private void Start()
+    public override ItemType takeItem()
     {
-        _tableType = 2;
+        return productionItemType;
     }
 
-    public override FoodType interAct(FoodType givenFood)
+    public override bool putDownItem(ItemType givenFood)
     {
-        print("음식 생성");
-        return productionFoodType;
+        return false;
     }
 }

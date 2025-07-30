@@ -1,49 +1,52 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class PlayerInteraction : MonoBehaviour
 {
     public Transform triggerTransform;
 
     private bool touch = false;
-    private FoodType carryingFoodType = FoodType.None;
+    private ItemType carryingFoodType = ItemType.None;
     private Collider currentSelected = null;
     private HashSet<Collider> collidedObjects = new HashSet<Collider>();
 
-    void Start()
+    void OnLeftClick()
     {
-        OnInteraction();
-    }
+        if (!touch) return;
 
-    void Update()
-    {
-    }
-
-    void OnInteraction()
-    {
-        if (touch) {
-            touch = false;
-            collidedObjects.Clear();
-            var table = currentSelected.gameObject.GetComponent<Table>();
-            table.unSelect();
-
-            var food = table.interAct(carryingFoodType);
-
-            if (food == FoodType.None && carryingFoodType != FoodType.None)
-            //음식을 내려놨을 때
+        var table = currentSelected.gameObject.GetComponent<Table>();
+        if (carryingFoodType == ItemType.None)
+        //음식 들기
+        {
+            var takenFood = table.takeItem();
+            if (takenFood != ItemType.None)
             {
-                Destroy(transform.GetChild(1).gameObject);
-                carryingFoodType = food;
-            }
-            if (food != FoodType.None && carryingFoodType == FoodType.None)
-            //음식을 들었을 때
-            {
-                var foodObj = Resources.Load<GameObject>($"Prefabs/{Table.foodTypeNameMap[food]}");
+                var foodObj = Resources.Load<GameObject>($"Prefabs/{Table.itemTypeNameMap[takenFood]}");
                 var obj = Instantiate(foodObj, transform);
                 obj.transform.localPosition = new Vector3(0, 0.5f, 0.8f);
-                carryingFoodType = food;
+                carryingFoodType = takenFood;
             }
         }
+        else
+        //음식 내려놓기
+        {
+            var result = table.putDownItem(carryingFoodType);
+            if (result)
+            {
+                Destroy(transform.GetChild(1).gameObject);
+                carryingFoodType = ItemType.None;
+            }
+        }
+    }
+
+    void OnRightClick(InputValue input)
+    {
+        print("클릭됨" + input.isPressed);
+        if (!touch) return;
+        var table = currentSelected.gameObject.GetComponent<CuttingTable>();
+        print(table);
     }
 
     private void OnTriggerStay(Collider other)

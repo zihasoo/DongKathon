@@ -81,7 +81,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7d02539f0cfaed44bbf1a5f45761c6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedColorAlpha: 0.3
   triggerTransform: {fileID: 2670648133628751580}
 --- !u!114 &1456951640503664133
 MonoBehaviour:
@@ -95,8 +94,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c2e5fa50c8b54d4c87559aed1f4df26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultSpeed: 7
-  dashSpeed: 14
+  defaultSpeed: 5
+  dashSpeed: 10
   dashDuration: 0.4
   dashCoolTime: 1
   rotationSpeed: 800
