@@ -16,15 +16,7 @@ public class FoodOrderedUI : MonoBehaviour
 
     private void Start()
     {
-        //if (foodLogo == null || meterialArr.Length <= 0)
-        //{
-        //    foodLogo = foodOrderUIObj[0].GetComponent<Image>();
-
-        //    for (int i = 1; i < foodOrderUIObj.Length; i++)
-        //    {
-        //        meterialArr[i] = foodOrderUIObj[i].GetComponent<Image>();
-        //    }
-        //}
+        
     }
 }
 
