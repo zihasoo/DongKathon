@@ -10,4 +10,6 @@ public class Item : MonoBehaviour
     public float cookingTime;
 
     public string itemName;
+
+    public int score;
 }

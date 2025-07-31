@@ -1,7 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,23 +25,37 @@ public class UIManager : MonoBehaviour
     public Vector2 foodOrderedFirstPov;
 
 
-    public TextMeshProUGUI ScoreText;
+    public TextMeshProUGUI scoreText;
 
+
+    [Header("Game End UI")]
+    // Game End UI;
+
+    public GameObject endGameUI;
 
     public Image inGameTimerGauge;
     public TextMeshProUGUI inGameTimerText;
 
-    private void Initialized()
+    public TextMeshProUGUI failedCountText;
+    public TextMeshProUGUI finalCountText;
+    public TextMeshProUGUI failedscoreText;
+    public TextMeshProUGUI finalscoreText;
+
+    public TextMeshProUGUI totalScoreText;
+
+    public TextMeshProUGUI gameStageText;
+
+    public Image[] scoreRatingImg;
+
+
+    public float ratingGaugeTime;
+
+    public void Initialized()
     {
-        ScoreText.text = "0";
+        scoreText.text = "0";
 
         if (instance == null)
             instance = this;
-    }
-
-    private void Awake()
-    {
-        Initialized();
     }
 
     void Start()
@@ -142,10 +159,11 @@ public class UIManager : MonoBehaviour
         Debug.Log(item.itemName);
 
         //tmpOderedObj.transform.localPosition =
+        StartCoroutine(tmpOrdered.CookingTime(item));
     }
 
 
-    public void CompleteOrder(Item item)
+    public void CompleteOrder(Item item, bool isComplete = true)
     {
         if (curOrdered.Count <= 0 || item == null)
         {
@@ -174,13 +192,114 @@ public class UIManager : MonoBehaviour
         curOrdered.Remove(tmpFoodOrderUI);
         completeOrdered.Add(tmpFoodOrderUI);
 
+        if(isComplete)
+        {
+            AddScore(item.score);
+            Debug.Log("Complete");
+        }
+        else
+        {
+            MinusScore(item.score / 2);
+            Debug.Log("Fialed");
+        }
+
         GameManager.instance.curOrderedCount--;
     }
 
     public void AddScore(int score)
     {
         GameManager.instance.inGameScore += score;
-        ScoreText.text = GameManager.instance.inGameScore.ToString();
+        GameManager.instance.completeCount++;
+        scoreText.text = GameManager.instance.inGameScore.ToString();
+        
+    }
+
+    public void MinusScore(int score)
+    {
+        GameManager.instance.failedScore += score;
+        GameManager.instance.failedCount++;
+    }
+    
+    
+    public void StartGameEnd()
+    {
+        StartCoroutine("GameEnd");
+    }
+
+    IEnumerator GameEnd()
+    {
+        endGameUI.SetActive(true);
+        scoreText.transform.parent.gameObject.SetActive(false);
+        inGameTimerText.transform.parent.gameObject.SetActive(false);
+
+        gameStageText.text = GameManager.instance.curStage.firstStage+"-"+GameManager.instance.curStage.secondStage;
+
+        //성공 회숫 및 점수
+        finalCountText.text = "Complete Order x "+GameManager.instance.completeCount.ToString();
+        finalscoreText.text = GameManager.instance.inGameScore.ToString();
+
+        yield return new WaitForSeconds(0.1f);
+
+        //실패 회숫 및 점수
+        finalCountText.text = "Filed Order x "+GameManager.instance.failedCount.ToString();
+        failedscoreText.text = GameManager.instance.failedScore.ToString();
+
+        yield return new WaitForSeconds(0.1f);
+
+        int finalScore = GameManager.instance.inGameScore - GameManager.instance.failedScore;
+        int ratingIndex = 0;
+
+        Debug.Log(finalScore);
+        totalScoreText.text = finalScore.ToString();
+
+        // 최종 등급
+        for(int i = 0; i < 3; i++)
+        {
+            if (finalScore >= GameManager.instance.curStage.ratingScore[i])
+            {
+                Debug.Log("최종 점수");
+                ratingIndex++;
+            }
+        }
+        
+        StartCoroutine(RatingUIAnimation(ratingIndex));
+    }
+
+    IEnumerator RatingUIAnimation(int rating)
+    {
+        int index = 0;
+        float time = ratingGaugeTime;
+        while (true)
+        {
+
+            if(time <= 0)
+            {
+                Debug.Log("Rating Animation End"+index);
+                scoreRatingImg[index].fillAmount = 1;
+                time = ratingGaugeTime;
+                index++;
+            }
+            else
+            {
+                if(time >= ratingGaugeTime)
+                {
+                    scoreRatingImg[index].gameObject.SetActive(true);
+                }
+
+                time -= 0.01f;
+
+                scoreRatingImg[index].fillAmount = 1 - (time / ratingGaugeTime);
+            }
+
+
+            if (index >= rating)
+            {
+                Debug.Log("Your rating :" + index);
+                break;
+            }
+
+            yield return new WaitForSeconds(0.01f);
+        }
     }
 
 
