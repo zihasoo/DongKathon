@@ -43,10 +43,13 @@ public class PlayerInteraction : MonoBehaviour
 
     void OnRightClick(InputValue input)
     {
-        print("Å¬¸¯µÊ" + input.isPressed);
         if (!touch) return;
-        var table = currentSelected.gameObject.GetComponent<CuttingTable>();
-        print(table);
+        var table = currentSelected.GetComponent<CuttingTable>();
+        if (table == null) return;
+        if(input.isPressed)
+            table.startCutting();
+        else
+            table.stopCutting();
     }
 
     private void OnTriggerStay(Collider other)
@@ -69,6 +72,8 @@ public class PlayerInteraction : MonoBehaviour
         if (closest != currentSelected)
         {
             currentSelected.GetComponent<Table>().unSelect();
+            currentSelected.GetComponent<CuttingTable>()?.stopCutting();
+
             closest.GetComponent<Table>().select();
             currentSelected = closest;
         }
@@ -92,6 +97,7 @@ public class PlayerInteraction : MonoBehaviour
         if (currentSelected == other)
         {
             currentSelected.GetComponent<Table>().unSelect();
+            currentSelected.GetComponent<CuttingTable>()?.stopCutting();
             touch = false;
         }
         collidedObjects.Remove(other);

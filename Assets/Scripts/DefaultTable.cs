@@ -26,11 +26,18 @@ public class DefaultTable : Table
             return true;
         }
         else
-        //음식이 있을 때 (음식 합치기) **************구현해야됨****************
+        //음식이 있을 때 (음식 합치기) 
         {
-            print("음식 합쳐짐");
-            
-            return false; //음식이 합쳐지면 true 아니면 false
+            if (((int)givenFood & isCutOff) != 0 && ((int)currentItem & isCutOff) != 0 && currentItem != givenFood)
+                //테이블에 있는 음식과 플레이어가 내려놓으려는 음식이 모두 잘린 음식이고 같은 음식이 아닐 때
+            {
+                Destroy(transform.GetChild(0).gameObject); //원래 있던 음식 제거
+                currentItem = ItemType.FinishedDish; //합쳐진(완성된) 음식으로 바꾸기
+                var obj = Resources.Load<GameObject>($"Prefabs/{Table.itemTypeNameMap[currentItem]}");
+                Instantiate(obj, transform);
+                return true;
+            }
+            return false;
         }
     }
 }
