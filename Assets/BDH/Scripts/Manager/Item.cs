@@ -10,6 +10,4 @@ public class Item : MonoBehaviour
     public float cookingTime;
 
     public string itemName;
-
-    public FoodUISize uiSize = FoodUISize.S;
 }

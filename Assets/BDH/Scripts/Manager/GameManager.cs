@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -29,19 +30,23 @@ public class GameManager : MonoBehaviour
 
     IEnumerator GameTimer()
     {
+        inGameCurTimerRemaining = inGameMaxTimerRemaining;
+
         while(true)
         {
-            inGameCurTimerRemaining += Time.deltaTime;
+            inGameCurTimerRemaining -= 0.01f;
 
-            UIManager.instance.ScoreText.text = inGameCurTimerRemaining.ToString();
-            //UIManager.instance.inGameTimerGauge.fillAmount = 
 
-            if(inGameCurTimerRemaining >= inGameMaxTimerRemaining)
+            UIManager.instance.inGameTimerText.text = TimeSpan.FromSeconds(inGameCurTimerRemaining).ToString(@"mm\:ss");
+            UIManager.instance.inGameTimerGauge.fillAmount = (inGameCurTimerRemaining / inGameMaxTimerRemaining); 
+
+            if (inGameCurTimerRemaining <= 0)
             {
+                UIManager.instance.inGameTimerGauge.gameObject.SetActive(false);
                 isGameEnd = true;
                 break;
             }
-            yield return null;
+            yield return new WaitForSeconds(0.01f);
         }
     }
 }

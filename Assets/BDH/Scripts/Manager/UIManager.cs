@@ -31,6 +31,14 @@ public class UIManager : MonoBehaviour
     private void Initialized()
     {
         ScoreText.text = "0";
+
+        if (instance == null)
+            instance = this;
+    }
+
+    private void Awake()
+    {
+        Initialized();
     }
 
     void Start()
@@ -50,6 +58,7 @@ public class UIManager : MonoBehaviour
             for(int i1 = 0; i1 < tmpfoodOdered.meterialArr.Length; i1++)
             {
                 tmpfoodOdered.meterialArr[i1].sprite = null;
+                tmpfoodOdered.meterialArr[i1].transform.parent.gameObject.SetActive(false);
             }
 
             completeOrdered.Add(tmpfoodOdered);
@@ -83,7 +92,6 @@ public class UIManager : MonoBehaviour
         tmpOderedObj.SetActive(true);
 
         tmpRect.localScale = Vector3.one;
-        tmpRect.sizeDelta = new Vector2((float)item.uiSize, foodOrderedDefualtSize.y);
         #region 배치 
         //tmpRect.sizeDelta = new Vector2((float)item.uiSize, 100.0f);
         ////주문이 있다면
@@ -125,9 +133,10 @@ public class UIManager : MonoBehaviour
 
         //음식로고 및 재료로고 이미지 넣기
         tmpOrdered.foodLogo.sprite = item.foodLogo;
-        for (int i = 0; i < tmpOrdered.meterialArr.Length; i++)
+        for (int i = 0; i < item.foodMeterial.Length; i++)
         {
             tmpOrdered.meterialArr[i].sprite = item.foodMeterial[i];
+            tmpOrdered.meterialArr[i].transform.parent.gameObject.SetActive(true);
         }
 
         Debug.Log(item.itemName);
