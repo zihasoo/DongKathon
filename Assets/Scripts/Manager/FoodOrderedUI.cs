@@ -19,11 +19,23 @@ public class FoodOrderedUI : MonoBehaviour
 
     public float curCookingTime = 0.0f;
 
+    private IEnumerator CookingTimeRoutine;
 
-    public IEnumerator CookingTime(Item item)
+    public void StartCookingRoutine(Item item)
+    {
+        CookingTimeRoutine = CookingTime(item);
+        StartCoroutine(CookingTimeRoutine);
+    }
+
+    public void StopCookingRoutine()
+    {
+        StopCoroutine(CookingTimeRoutine);
+    }
+
+    private IEnumerator CookingTime(Item item)
     {
         curCookingTime = item.cookingTime;
-        
+
         while(true)
         {
             if(curCookingTime <= 0f)

@@ -149,17 +149,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curOrderedCount: 0
-  maxOrderedCount: 0
+  maxOrderedCount: 5
   inGameScore: 0
   failedScore: 0
   completeCount: 0
   failedCount: 0
   inGameCurTimerRemaining: 0
-  inGameMaxTimerRemaining: 300
+  inGameMaxTimerRemaining: 30
   isGameEnd: 0
   uiManager: {fileID: 0}
   curStage: {fileID: 0}
-  InGameSceneName: UIScene
+  InGameSceneName: InGame
+  standardItem: {fileID: 5404456386572357204, guid: 607466499bdd07745bea3dc04211ff1c, type: 3}
 --- !u!4 &169991768
 Transform:
   m_ObjectHideFlags: 0

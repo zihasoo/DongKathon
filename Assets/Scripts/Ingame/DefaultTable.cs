@@ -23,7 +23,7 @@ public class DefaultTable : Table
         //테이블에 음식이 없을 때
         {
             currentItem = givenFood;
-            var obj = Resources.Load<GameObject>($"Prefabs/{Table.itemTypeNameMap[currentItem]}");
+            var obj = Resources.Load<GameObject>($"Prefabs/Ingame/{Table.itemTypeNameMap[currentItem]}");
             Instantiate(obj, pool);
             return true;
         }
@@ -35,7 +35,7 @@ public class DefaultTable : Table
             {
                 Destroy(pool.GetChild(0).gameObject); //원래 있던 음식 제거
                 currentItem = ItemType.FinishedDish; //합쳐진(완성된) 음식으로 바꾸기
-                var obj = Resources.Load<GameObject>($"Prefabs/{Table.itemTypeNameMap[currentItem]}");
+                var obj = Resources.Load<GameObject>($"Prefabs/Ingame/{Table.itemTypeNameMap[currentItem]}");
                 Instantiate(obj, pool);
                 return true;
             }

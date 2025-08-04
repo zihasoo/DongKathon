@@ -20,7 +20,7 @@ public class CuttingTable : DefaultTable
         if (currentItem != ItemType.None) return false;
 
         currentItem = givenFood;
-        var obj = Resources.Load<GameObject>($"Prefabs/{Table.itemTypeNameMap[currentItem]}");
+        var obj = Resources.Load<GameObject>($"Prefabs/Ingame/{Table.itemTypeNameMap[currentItem]}");
         Instantiate(obj, pool);
         return true;
     }
@@ -45,7 +45,7 @@ public class CuttingTable : DefaultTable
     {
         currentItem = currentItem | (ItemType)isCutOff;
         Destroy(pool.GetChild(0).gameObject);
-        var obj = Resources.Load<GameObject>($"Prefabs/{Table.itemTypeNameMap[currentItem]}");
+        var obj = Resources.Load<GameObject>($"Prefabs/Ingame/{Table.itemTypeNameMap[currentItem]}");
         Instantiate(obj, pool);
     }
 
@@ -60,7 +60,7 @@ public class CuttingTable : DefaultTable
         for (int i = 1; i <= 10; i++)
         {
             gauge.fillAmount = 0.1f * i;
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.15f);
         }
         print("자르기 완료");
         finishCutting();

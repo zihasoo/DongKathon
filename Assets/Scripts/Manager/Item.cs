@@ -3,9 +3,9 @@ using UnityEngine.UI;
 
 public class Item : MonoBehaviour
 {
-    public Sprite foodLogo;
+    public Sprite foodSprite;
 
-    public Sprite[] foodMeterial;
+    public Sprite[] foodMeterialSprites;
 
     public float cookingTime;
 

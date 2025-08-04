@@ -27,12 +27,23 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]private string InGameSceneName;
 
+    public Item standardItem;
+
     private void Awake()
     {
         Debug.Log(SceneManager.GetActiveScene().name);
 
         if (instance == null)
             instance = this;
+    }
+
+    IEnumerator CreateOrderRoutine()
+    {
+        while (true)
+        {
+            UIManager.instance.GetOrder(standardItem);
+            yield return new WaitForSeconds(standardItem.cookingTime - 1);
+        }
     }
 
     IEnumerator GameTimer()
@@ -49,6 +60,7 @@ public class GameManager : MonoBehaviour
 
             if (inGameCurTimerRemaining <= 0)
             {
+                StopCoroutine("CreateOrderRoutine");
                 UIManager.instance.inGameTimerGauge.gameObject.SetActive(false);
                 UIManager.instance.StartGameEnd();
                 isGameEnd = true;
@@ -58,7 +70,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public  void GameStartBtn()
+    public void GameStartBtn()
     {
         StartCoroutine(GameStart());
     }
@@ -95,5 +107,6 @@ public class GameManager : MonoBehaviour
         UIManager.instance.Initialized();
         
         StartCoroutine("GameTimer");
+        StartCoroutine("CreateOrderRoutine");
     }
 }

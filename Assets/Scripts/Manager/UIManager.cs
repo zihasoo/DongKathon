@@ -36,10 +36,10 @@ public class UIManager : MonoBehaviour
     public Image inGameTimerGauge;
     public TextMeshProUGUI inGameTimerText;
 
+    public TextMeshProUGUI completeCountText;
+    public TextMeshProUGUI completeScoreText;
     public TextMeshProUGUI failedCountText;
-    public TextMeshProUGUI finalCountText;
-    public TextMeshProUGUI failedscoreText;
-    public TextMeshProUGUI finalscoreText;
+    public TextMeshProUGUI failedScoreText;
 
     public TextMeshProUGUI totalScoreText;
 
@@ -149,17 +149,17 @@ public class UIManager : MonoBehaviour
         }
 
         //음식로고 및 재료로고 이미지 넣기
-        tmpOrdered.foodLogo.sprite = item.foodLogo;
-        for (int i = 0; i < item.foodMeterial.Length; i++)
+        tmpOrdered.foodLogo.sprite = item.foodSprite;
+        for (int i = 0; i < item.foodMeterialSprites.Length; i++)
         {
-            tmpOrdered.meterialArr[i].sprite = item.foodMeterial[i];
+            tmpOrdered.meterialArr[i].sprite = item.foodMeterialSprites[i];
             tmpOrdered.meterialArr[i].transform.parent.gameObject.SetActive(true);
         }
 
         Debug.Log(item.itemName);
 
         //tmpOderedObj.transform.localPosition =
-        StartCoroutine(tmpOrdered.CookingTime(item));
+        tmpOrdered.StartCookingRoutine(item);
     }
 
 
@@ -175,6 +175,8 @@ public class UIManager : MonoBehaviour
         
         FoodOrderedUI tmpFoodOrderUI = curOrdered[index];
         GameObject tmpUiObj = tmpFoodOrderUI.gameObject;
+
+        tmpFoodOrderUI.StopCookingRoutine();
 
         // 비활성화 및 off 이동
         tmpUiObj.SetActive(false);
@@ -200,7 +202,7 @@ public class UIManager : MonoBehaviour
         else
         {
             MinusScore(item.score / 2);
-            Debug.Log("Fialed");
+            Debug.Log("Failed");
         }
 
         GameManager.instance.curOrderedCount--;
@@ -211,7 +213,6 @@ public class UIManager : MonoBehaviour
         GameManager.instance.inGameScore += score;
         GameManager.instance.completeCount++;
         scoreText.text = GameManager.instance.inGameScore.ToString();
-        
     }
 
     public void MinusScore(int score)
@@ -235,18 +236,18 @@ public class UIManager : MonoBehaviour
         gameStageText.text = GameManager.instance.curStage.firstStage+"-"+GameManager.instance.curStage.secondStage;
 
         //성공 회숫 및 점수
-        finalCountText.text = "Complete Order x "+GameManager.instance.completeCount.ToString();
-        finalscoreText.text = GameManager.instance.inGameScore.ToString();
+        completeCountText.text = "Complete Order x "+GameManager.instance.completeCount.ToString();
+        completeScoreText.text = GameManager.instance.inGameScore.ToString();
 
         yield return new WaitForSeconds(0.1f);
 
         //실패 회숫 및 점수
-        finalCountText.text = "Filed Order x "+GameManager.instance.failedCount.ToString();
-        failedscoreText.text = GameManager.instance.failedScore.ToString();
+        failedCountText.text = "Failed Order x "+GameManager.instance.failedCount.ToString();
+        failedScoreText.text = GameManager.instance.failedScore.ToString();
 
         yield return new WaitForSeconds(0.1f);
 
-        int finalScore = GameManager.instance.inGameScore - GameManager.instance.failedScore;
+        int finalScore = System.Math.Max(GameManager.instance.inGameScore - GameManager.instance.failedScore, 0);
         int ratingIndex = 0;
 
         Debug.Log(finalScore);
@@ -301,10 +302,4 @@ public class UIManager : MonoBehaviour
             yield return new WaitForSeconds(0.01f);
         }
     }
-
-
 }
-
-
-
-

@@ -23,7 +23,7 @@ public class PlayerInteraction : MonoBehaviour
             var takenFood = table.takeItem();
             if (takenFood != ItemType.None)
             {
-                var foodObj = Resources.Load<GameObject>($"Prefabs/{Table.itemTypeNameMap[takenFood]}");
+                var foodObj = Resources.Load<GameObject>($"Prefabs/Ingame/{Table.itemTypeNameMap[takenFood]}");
                 var obj = Instantiate(foodObj, transform);
                 obj.transform.localPosition = new Vector3(0, 0.5f, 0.8f);
                 carryingFoodType = takenFood;
