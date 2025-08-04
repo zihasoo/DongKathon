@@ -11,5 +11,5 @@ public class Item : MonoBehaviour
 
     public string itemName;
 
-    public FoodUISize uiSize = FoodUISize.S;
+    public int score;
 }
